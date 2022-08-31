@@ -45,6 +45,47 @@ class ColorPicker {
     this.ctx.stroke();
   }
 
+  private findInterval = (): number[] => {
+    const intervals = [
+      0,
+      (this.canvas.height / 6),
+      (this.canvas.height / 6) * 2,
+      (this.canvas.height / 6) * 3,
+      (this.canvas.height / 6) * 4,
+      (this.canvas.height / 6) * 5,
+      (this.canvas.height / 6) * 6,
+      this.canvas.height
+    ]
+    for (let i = 0; i < intervals.length - 1; i++) {
+      const minVal = intervals[i];
+      const maxVal = intervals[i + 1];
+      if (this.selectionPos >= minVal && this.selectionPos <= maxVal) {
+        console.log(i, maxVal)
+        return [i, maxVal];
+      }
+    }
+    return [-1, -1, -1]
+  }
+
+  private getChosenColor = () => {
+    const [i, maxVal] = this.findInterval();
+    const colorNum = (this.selectionPos / maxVal) * 255;
+    switch (i) {
+      case 0:
+        return `rgb(255, ${colorNum}, 0)`;
+      case 1:
+        return `rgb(${colorNum}, 255, 0)`;
+      case 2:
+        return `rgb(0, 255, ${colorNum})`;
+      case 3:
+        return `rgb(0, ${colorNum}, 255)`;
+      case 4:
+        return `rgb(${colorNum}, 0, 255)`;
+      case 5:
+        return `rgb(255, 0, ${colorNum})`;
+    }
+  }
+
   private draw = () => {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -68,15 +109,22 @@ class ColorPicker {
     window.addEventListener('mousemove', this.onPointerMove);
   }
 
+  private getCanvasMousePos = (e: MouseEvent): number => {
+    const rect = this.canvas.getBoundingClientRect();
+    return e.clientY - rect.top;
+  }
+
   private onPointerDown = (e: MouseEvent) => {
     this.isDragging = true;
-    this.selectionPos = e.clientY;
+    this.selectionPos = Math.min(Math.max(this.getCanvasMousePos(e), 0), this.canvas.height);
   }
 
   private onPointerMove = (e: MouseEvent) => {
     if (this.isDragging) {
-      this.selectionPos = e.clientY;
+      this.selectionPos = Math.min(Math.max(this.getCanvasMousePos(e), 0), this.canvas.height);
+      console.log(this.getChosenColor());
     }
+    
   }
 
   private onPointerUp = (e: MouseEvent) => {
