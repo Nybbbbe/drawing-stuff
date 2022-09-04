@@ -66,30 +66,29 @@ class ColorPicker {
       const minVal = intervals[i];
       const maxVal = intervals[i + 1];
       if (this.selectionPos >= minVal && this.selectionPos <= maxVal) {
-        console.log(i, maxVal)
-        return [i, maxVal];
+        return [i, minVal];
       }
     }
-    return [-1, -1, -1]
+    return [-1, -1]
   }
 
   private getChosenColor = () => {
-    const [i, maxVal] = this.findInterval();
-    const colorNum = (this.selectionPos / maxVal) * 255;
+    const [i, minVal] = this.findInterval();
+    const colorNum = ((this.selectionPos - minVal) / (this.canvas.height / 6)) * 255;
     console.log(colorNum)
     switch (i) {
       case 0:
         return `rgb(255, ${colorNum}, 0)`;
       case 1:
-        return `rgb(${colorNum}, 255, 0)`;
+        return `rgb(${255 - colorNum}, 255, 0)`;
       case 2:
         return `rgb(0, 255, ${colorNum})`;
       case 3:
-        return `rgb(0, ${colorNum}, 255)`;
+        return `rgb(0, ${255 - colorNum}, 255)`;
       case 4:
         return `rgb(${colorNum}, 0, 255)`;
       case 5:
-        return `rgb(255, 0, ${colorNum})`;
+        return `rgb(255, 0, ${255 - colorNum})`;
     }
   }
 
