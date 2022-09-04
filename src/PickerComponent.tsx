@@ -1,20 +1,24 @@
 import { makeAutoObservable } from "mobx";
 import { observer } from "mobx-react-lite";
 import { useEffect, useRef } from "react";
-import colorPicker from "./ColorPicker";
+import colorPicker, { ChosenColor } from "./ColorPicker";
 import './PickerComponent.scss';
 
 colorPicker;
 
 class ColorPickerState {
-  currentColor = '';
+  currentChosenColor: ChosenColor = {
+    colorString: ``,
+    lockedRGB: '',
+    lockedNum: 0
+  }
 
   constructor() {
       makeAutoObservable(this)
   }
 
-  setNewColor(newColor: string) {
-      this.currentColor = newColor;
+  setNewChosenColor(newChosenColor: ChosenColor) {
+      this.currentChosenColor = newChosenColor;
   }
 }
 
@@ -31,8 +35,8 @@ const PickerComponent = (observer(() => {
         <canvas id="picker-canvas" ref={canvasRef}></canvas>
         <div>
           <h2>Current color:</h2>
-          <p>{colorPickerState.currentColor}</p>
-          <div className="show-color-div" style={{backgroundColor: colorPickerState.currentColor}}></div>
+          <p>{colorPickerState.currentChosenColor.colorString}</p>
+          <div className="show-color-div" style={{backgroundColor: colorPickerState.currentChosenColor.colorString}}></div>
         </div>
       </div>
     )

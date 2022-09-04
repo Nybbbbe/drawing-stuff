@@ -1,12 +1,6 @@
 import { colorPickerState } from "./PickerComponent";
 
-export type ChosenColor = {
-  colorString: string,
-  lockedRGB: string,
-  lockedNum: number
-}
-
-class ColorPicker {
+class ColorPicker2 {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
 
@@ -25,12 +19,12 @@ class ColorPicker {
     this.resize();
     window.addEventListener('resize', this.resize);
     this.handleMouseEvents();
-    requestAnimationFrame(this.draw);
+    // requestAnimationFrame(this.draw);
   }
 
   private resize = () => {
-    this.canvas.width = 64;
-    this.canvas.height = window.innerHeight - 32;
+    this.canvas.width = 128;
+    this.canvas.height = 128;
   }
 
   private drawGradiant = (i: number, c1: string, c2: string) => {
@@ -78,52 +72,23 @@ class ColorPicker {
     return [-1, -1]
   }
 
-  private getChosenColor = (): ChosenColor => {
+  private getChosenColor = () => {
     const [i, minVal] = this.findInterval();
     const colorNum = ((this.selectionPos - minVal) / (this.canvas.height / 6)) * 255;
     console.log(colorNum)
     switch (i) {
       case 0:
-        return {
-          colorString: `rgb(255, ${colorNum}, 0)`,
-          lockedRGB: 'g',
-          lockedNum: colorNum
-        }
+        return `rgb(255, ${colorNum}, 0)`;
       case 1:
-        return {
-          colorString: `rgb(${255 - colorNum}, 255, 0)`,
-          lockedRGB: 'r',
-          lockedNum: 255 - colorNum
-        }
+        return `rgb(${255 - colorNum}, 255, 0)`;
       case 2:
-        return {
-          colorString: `rgb(0, 255, ${colorNum})`,
-          lockedRGB: 'b',
-          lockedNum: colorNum
-        }
+        return `rgb(0, 255, ${colorNum})`;
       case 3:
-        return {
-          colorString: `rgb(0, ${255 - colorNum}, 255)`,
-          lockedRGB: 'g',
-          lockedNum: 255 - colorNum
-        }
+        return `rgb(0, ${255 - colorNum}, 255)`;
       case 4:
-        return {
-          colorString: `rgb(${colorNum}, 0, 255)`,
-          lockedRGB: 'r',
-          lockedNum: colorNum
-        }
+        return `rgb(${colorNum}, 0, 255)`;
       case 5:
-        return {
-          colorString: `rgb(255, 0, ${255 - colorNum})`,
-          lockedRGB: 'b',
-          lockedNum: 255 - colorNum
-        }
-    }
-    return {
-      colorString: ``,
-      lockedRGB: '',
-      lockedNum: 0
+        return `rgb(255, 0, ${255 - colorNum})`;
     }
   }
 
@@ -158,15 +123,13 @@ class ColorPicker {
   private onPointerDown = (e: MouseEvent) => {
     this.isDragging = true;
     this.selectionPos = Math.min(Math.max(this.getCanvasMousePos(e), 0), this.canvas.height);
-    const chosenColor = this.getChosenColor();
-    colorPickerState.setNewChosenColor(chosenColor);
+    colorPickerState.setNewColor(this.getChosenColor()!);
   }
 
   private onPointerMove = (e: MouseEvent) => {
     if (this.isDragging) {
       this.selectionPos = Math.min(Math.max(this.getCanvasMousePos(e), 0), this.canvas.height);
-      const chosenColor = this.getChosenColor();
-      colorPickerState.setNewChosenColor(chosenColor);
+      colorPickerState.setNewColor(this.getChosenColor()!);
     }
     
   }
@@ -176,5 +139,5 @@ class ColorPicker {
   }
 }
 
-const colorPicker = new ColorPicker();
+const colorPicker = new ColorPicker2();
 export default colorPicker;
