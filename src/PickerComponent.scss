@@ -1,0 +1,15 @@
+#pickerContainer {
+  height: 100%;
+  display: flex;
+}
+
+canvas {
+  padding: 16px;
+}
+
+.show-color-div {
+  width: 100px;
+  height: 40px;
+  border: 4px solid black;
+  border-radius: 16px;
+}

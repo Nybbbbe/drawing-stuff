@@ -5,10 +5,3 @@ html, body, #root {
   padding: 0;
   position: relative;
 }
-
-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 16px;
-}

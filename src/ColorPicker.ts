@@ -1,3 +1,5 @@
+import { colorPickerState } from "./PickerComponent";
+
 class ColorPicker {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
@@ -9,11 +11,15 @@ class ColorPicker {
   constructor() {
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d')!;
-    window.addEventListener('resize', this.resize)
-    document.body.appendChild(this.canvas);
+  }
+
+  public updateRefs = (canvas: HTMLCanvasElement) => {
+    this.canvas = canvas;
+    this.ctx = this.canvas.getContext('2d')!;
     this.resize();
-    this.handleMouseEvents()
-    requestAnimationFrame(this.draw)
+    window.addEventListener('resize', this.resize);
+    this.handleMouseEvents();
+    requestAnimationFrame(this.draw);
   }
 
   private resize = () => {
@@ -70,6 +76,7 @@ class ColorPicker {
   private getChosenColor = () => {
     const [i, maxVal] = this.findInterval();
     const colorNum = (this.selectionPos / maxVal) * 255;
+    console.log(colorNum)
     switch (i) {
       case 0:
         return `rgb(255, ${colorNum}, 0)`;
@@ -117,12 +124,13 @@ class ColorPicker {
   private onPointerDown = (e: MouseEvent) => {
     this.isDragging = true;
     this.selectionPos = Math.min(Math.max(this.getCanvasMousePos(e), 0), this.canvas.height);
+    colorPickerState.setNewColor(this.getChosenColor()!);
   }
 
   private onPointerMove = (e: MouseEvent) => {
     if (this.isDragging) {
       this.selectionPos = Math.min(Math.max(this.getCanvasMousePos(e), 0), this.canvas.height);
-      console.log(this.getChosenColor());
+      colorPickerState.setNewColor(this.getChosenColor()!);
     }
     
   }
