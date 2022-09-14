@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import ColorPaletteComponent from "./ColorPaletteComponent";
 import drawing from "./Drawings";
 
 const DrawingComponent = () => {
@@ -9,9 +10,12 @@ const DrawingComponent = () => {
   }, [])
   
   return (
+    <>
     <div className="canvas-wrapper">
       <canvas id="drawing-canvas" ref={drawingCanvasRef}></canvas>
     </div>
+    < ColorPaletteComponent/>
+    </>
   )
 }
 

@@ -1,6 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import { observer } from "mobx-react-lite";
 import { useEffect, useRef } from "react";
+import { colorPaletteState } from "../Drawing/ColorPaletteComponent";
 import colorPicker, { ChosenColor } from "./ColorPicker";
 import colorPicker2 from "./ColorPicker2";
 import './PickerComponent.scss';
@@ -36,6 +37,12 @@ const PickerComponent = (observer(() => {
     colorPicker2.updateRefs(canvasRef2.current! as HTMLCanvasElement);
   }, [])
 
+  const addToColorPalette = () => {
+    if (colorPickerState.currentFinalColor !== '') {
+      colorPaletteState.addColorToPalette(colorPickerState.currentFinalColor);
+    }
+  }
+
   return (
     <div id="pickerContainer">
       <div className="canvas-wrapper">
@@ -49,6 +56,7 @@ const PickerComponent = (observer(() => {
           <canvas id="picker-canvas-2" ref={canvasRef2}></canvas>
         </div>
         <div className="show-color-div" style={{backgroundColor: colorPickerState.currentFinalColor}}></div>
+        <button onClick={() => addToColorPalette()}>Add To Color Palette</button>
       </div>
     </div>
   ) 

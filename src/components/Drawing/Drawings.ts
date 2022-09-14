@@ -1,4 +1,6 @@
 import { colorPickerState } from "../ColorPicker/PickerComponent";
+import { colorPaletteState } from "./ColorPaletteComponent";
+import { checkOverlap } from "./DrawingUtils";
 
 type TCell = {
   x: number,
@@ -144,7 +146,7 @@ class Drawing {
 
   private draw = () => {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.drawBackground();
+    // this.drawBackground();
     
     this.drawCells();
     this.drawGrid();
@@ -155,6 +157,24 @@ class Drawing {
     
 
     requestAnimationFrame(this.draw)
+  }
+
+  private handleSelection = () => {
+    const cW = this.canvas.width
+    const cH = this.canvas.height
+    const gridNumW = this.drawingState.width
+    const gridNumH = this.drawingState.height
+    const gridSizeW = cW / gridNumW;
+    const gridSizeH = cH / gridNumH;
+    const x = Math.min(this.selectionPosStart.x, this.selectionPosEnd.x);
+    const y = Math.min(this.selectionPosStart.y, this.selectionPosEnd.y);
+    const w = Math.abs(this.selectionPosStart.x - this.selectionPosEnd.x);
+    const h = Math.abs(this.selectionPosStart.y - this.selectionPosEnd.y);
+    this.drawingState.cells.forEach(cell => {
+      if(checkOverlap(x, y, w, h, cell.x * gridSizeW, cell.y * gridSizeH, gridSizeW, gridSizeH)) {
+        cell.color = colorPaletteState.selectedColor;
+      }
+    })
   }
 
   private handleMouseEvents = () => {
@@ -193,6 +213,7 @@ class Drawing {
 
   private onPointerUp = (e: MouseEvent) => {
     this.isDragging = false;
+    this.handleSelection()
   }
 }
 
