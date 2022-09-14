@@ -1,6 +1,6 @@
 import { intercept, observe } from "mobx";
 import { colorPickerState } from "./PickerComponent";
-import { extractRGB } from "./utils";
+import { extractRGB } from "../../utils";
 
 class ColorPicker2 {
   private canvas: HTMLCanvasElement;
@@ -108,12 +108,12 @@ class ColorPicker2 {
 
   private getCanvasMousePosY = (e: MouseEvent): number => {
     const rect = this.canvas.getBoundingClientRect();
-    return e.clientY - rect.top - 10;
+    return e.clientY - rect.top;
   }
 
   private getCanvasMousePosX = (e: MouseEvent): number => {
     const rect = this.canvas.getBoundingClientRect();
-    return e.clientX - rect.left - 10;
+    return e.clientX - rect.left;
   }
 
   private onPointerDown = (e: MouseEvent) => {

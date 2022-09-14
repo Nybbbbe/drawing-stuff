@@ -1,8 +1,12 @@
-import PickerComponent from './PickerComponent';
+import PickerComponent from './components/ColorPicker/PickerComponent';
+import DrawingComponent from './components/Drawing/DrawingComponent';
 
 const App = () => {
   return (
-    < PickerComponent/>
+    <>
+      < PickerComponent/>
+      < DrawingComponent/>
+    </>
   )
 }
 

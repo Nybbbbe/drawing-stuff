@@ -38,12 +38,16 @@ const PickerComponent = (observer(() => {
 
   return (
     <div id="pickerContainer">
-      <canvas id="picker-canvas" ref={canvasRef}></canvas>
+      <div className="canvas-wrapper">
+        <canvas id="picker-canvas" ref={canvasRef}></canvas>
+      </div>
       <div>
         <h2>Current color:</h2>
         <p>{colorPickerState.currentChosenColor}</p>
         <div className="show-color-div" style={{backgroundColor: colorPickerState.currentChosenColor}}></div>
-        <canvas id="picker-canvas-2" ref={canvasRef2}></canvas>
+        <div className="canvas-wrapper">
+          <canvas id="picker-canvas-2" ref={canvasRef2}></canvas>
+        </div>
         <div className="show-color-div" style={{backgroundColor: colorPickerState.currentFinalColor}}></div>
       </div>
     </div>
