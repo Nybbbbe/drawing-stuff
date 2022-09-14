@@ -16,3 +16,7 @@ export const extractRGB = (colorString: string): RGB => {
     b: tmp[2],
   }
 }
+
+export const capitalizeString = (word: string) => {
+  return word[0].toUpperCase() + word.substring(1);
+}
