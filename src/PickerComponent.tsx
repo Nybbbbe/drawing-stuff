@@ -9,19 +9,20 @@ colorPicker;
 colorPicker2;
 
 class ColorPickerState {
-  currentChosenColor: ChosenColor = {
-    colorString: ``,
-    lockedRGB: '',
-    lockedNum: 0
-  }
+  currentChosenColor: string= '';
+  currentFinalColor: string = '';
 
   constructor() {
       makeAutoObservable(this)
   }
 
-  setNewChosenColor(newChosenColor: ChosenColor) {
+  setNewChosenColor(newChosenColor: string) {
       this.currentChosenColor = newChosenColor;
   }
+
+  setNewFinalColor(newFinalColor: string) {
+    this.currentFinalColor = newFinalColor;
+}
 }
 
 export const colorPickerState = new ColorPickerState();
@@ -40,9 +41,10 @@ const PickerComponent = (observer(() => {
       <canvas id="picker-canvas" ref={canvasRef}></canvas>
       <div>
         <h2>Current color:</h2>
-        <p>{colorPickerState.currentChosenColor.colorString}</p>
-        <div className="show-color-div" style={{backgroundColor: colorPickerState.currentChosenColor.colorString}}></div>
+        <p>{colorPickerState.currentChosenColor}</p>
+        <div className="show-color-div" style={{backgroundColor: colorPickerState.currentChosenColor}}></div>
         <canvas id="picker-canvas-2" ref={canvasRef2}></canvas>
+        <div className="show-color-div" style={{backgroundColor: colorPickerState.currentFinalColor}}></div>
       </div>
     </div>
   ) 

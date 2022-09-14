@@ -78,53 +78,25 @@ class ColorPicker {
     return [-1, -1]
   }
 
-  private getChosenColor = (): ChosenColor => {
+  private getChosenColor = (): string => {
     const [i, minVal] = this.findInterval();
     const colorNum = ((this.selectionPos - minVal) / (this.canvas.height / 6)) * 255;
     console.log(colorNum)
     switch (i) {
       case 0:
-        return {
-          colorString: `rgb(255, ${colorNum}, 0)`,
-          lockedRGB: 'g',
-          lockedNum: colorNum
-        }
+        return `rgb(255, ${colorNum}, 0)`;
       case 1:
-        return {
-          colorString: `rgb(${255 - colorNum}, 255, 0)`,
-          lockedRGB: 'r',
-          lockedNum: 255 - colorNum
-        }
+        return `rgb(${255 - colorNum}, 255, 0)`
       case 2:
-        return {
-          colorString: `rgb(0, 255, ${colorNum})`,
-          lockedRGB: 'b',
-          lockedNum: colorNum
-        }
+        return `rgb(0, 255, ${colorNum})`
       case 3:
-        return {
-          colorString: `rgb(0, ${255 - colorNum}, 255)`,
-          lockedRGB: 'g',
-          lockedNum: 255 - colorNum
-        }
+        return `rgb(0, ${255 - colorNum}, 255)`
       case 4:
-        return {
-          colorString: `rgb(${colorNum}, 0, 255)`,
-          lockedRGB: 'r',
-          lockedNum: colorNum
-        }
+        return `rgb(${colorNum}, 0, 255)`
       case 5:
-        return {
-          colorString: `rgb(255, 0, ${255 - colorNum})`,
-          lockedRGB: 'b',
-          lockedNum: 255 - colorNum
-        }
+        return `rgb(255, 0, ${255 - colorNum})`
     }
-    return {
-      colorString: ``,
-      lockedRGB: '',
-      lockedNum: 0
-    }
+    return ''
   }
 
   private draw = () => {
