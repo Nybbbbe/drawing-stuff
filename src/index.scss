@@ -44,6 +44,12 @@ button:active {
   color: #FF4742;
 }
 
+button.active {
+  background-color: initial;
+  background-position: 0 0;
+  color: #FF4742;
+}
+
 button:active {
   opacity: .5;
 }

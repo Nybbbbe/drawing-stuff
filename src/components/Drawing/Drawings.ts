@@ -1,6 +1,9 @@
 import { colorPickerState } from "../ColorPicker/PickerComponent";
 import { colorPaletteState } from "./ColorPaletteComponent";
-import { checkOverlap } from "./DrawingUtils";
+import { checkRectOverlap } from "./DrawingUtils";
+import DrawFreeTool from "./Tools/DrawFreeTool";
+import DrawRectTool from "./Tools/DrawRectTool";
+import { Tool, Tools } from "./Tools/ToolTypes";
 
 type TCell = {
   x: number,
@@ -8,7 +11,7 @@ type TCell = {
   color: string
 } 
 
-type TDrawing = {
+export type TDrawing = {
   width: number,
   height: number,
   cells: TCell[]
@@ -18,22 +21,12 @@ class Drawing {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
 
-  // mouseEvents
-  private isDragging: boolean = false;
-  private selectionPosStart = {
-    x: 0,
-    y: 0
-  }
-  private selectionPosEnd = {
-    x: 0,
-    y: 0
-  }
-
   public drawingState: TDrawing = {
     width: 16,
     height: 16,
     cells: []
   };
+  private activeTool: Tool | undefined = undefined; 
 
   constructor() {
     this.canvas = document.createElement('canvas');
@@ -44,7 +37,6 @@ class Drawing {
     this.canvas = canvas;
     this.ctx = this.canvas.getContext('2d')!;
     this.setupDefaultDrawing();
-    this.handleMouseEvents();
     this.resize();
     window.addEventListener('resize', this.resize);
     requestAnimationFrame(this.draw);
@@ -120,30 +112,6 @@ class Drawing {
     })
   }
 
-  private drawSelector = () => {
-    this.ctx.beginPath();
-    this.ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-    this.ctx.lineWidth = 5;
-    this.ctx.strokeStyle = "black";
-    this.ctx.arc(this.selectionPosStart.x, this.selectionPosStart.y, 10, 0, 2 * Math.PI);
-    this.ctx.fill();
-    this.ctx.closePath();
-    this.ctx.stroke();
-
-    this.ctx.beginPath();
-    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-    this.ctx.lineWidth = 2;
-    this.ctx.strokeStyle = "black";
-    const x = Math.min(this.selectionPosStart.x, this.selectionPosEnd.x);
-    const y = Math.min(this.selectionPosStart.y, this.selectionPosEnd.y);
-    const w = Math.abs(this.selectionPosStart.x - this.selectionPosEnd.x);
-    const h = Math.abs(this.selectionPosStart.y - this.selectionPosEnd.y);
-    this.ctx.rect(x, y, w, h);
-    this.ctx.fill();
-    this.ctx.closePath();
-    this.ctx.stroke();
-  }
-
   private draw = () => {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     // this.drawBackground();
@@ -151,69 +119,35 @@ class Drawing {
     this.drawCells();
     this.drawGrid();
     
-    if (this.isDragging) {
-      this.drawSelector();
+    if (this.activeTool !== undefined) {
+      this.activeTool.draw(this.ctx);
     }
     
-
     requestAnimationFrame(this.draw)
   }
 
-  private handleSelection = () => {
-    const cW = this.canvas.width
-    const cH = this.canvas.height
-    const gridNumW = this.drawingState.width
-    const gridNumH = this.drawingState.height
-    const gridSizeW = cW / gridNumW;
-    const gridSizeH = cH / gridNumH;
-    const x = Math.min(this.selectionPosStart.x, this.selectionPosEnd.x);
-    const y = Math.min(this.selectionPosStart.y, this.selectionPosEnd.y);
-    const w = Math.abs(this.selectionPosStart.x - this.selectionPosEnd.x);
-    const h = Math.abs(this.selectionPosStart.y - this.selectionPosEnd.y);
-    this.drawingState.cells.forEach(cell => {
-      if(checkOverlap(x, y, w, h, cell.x * gridSizeW, cell.y * gridSizeH, gridSizeW, gridSizeH)) {
-        cell.color = colorPaletteState.selectedColor;
-      }
-    })
-  }
-
-  private handleMouseEvents = () => {
-    this.canvas.addEventListener('mousedown', this.onPointerDown);
-    this.canvas.addEventListener('mousemove', this.onPointerMove);
-    this.canvas.addEventListener('mouseup', this.onPointerUp);
-  }
-
-  private getCanvasMousePosY = (e: MouseEvent): number => {
-    const rect = this.canvas.getBoundingClientRect();
-    return e.clientY - rect.top;
-  }
-
-  private getCanvasMousePosX = (e: MouseEvent): number => {
-    const rect = this.canvas.getBoundingClientRect();
-    return e.clientX - rect.left;
-  }
-
-  private onPointerDown = (e: MouseEvent) => {
-    this.isDragging = true;
-    this.selectionPosStart = {
-      x: Math.min(Math.max(this.getCanvasMousePosX(e), 0), this.canvas.width),
-      y: Math.min(Math.max(this.getCanvasMousePosY(e), 0), this.canvas.height)
+  public activateTool = (tool: Tools | undefined) => {
+    if (this.activeTool !== undefined) {
+      this.activeTool.terminate();
     }
-    this.selectionPosEnd = this.selectionPosStart
-  }
-
-  private onPointerMove = (e: MouseEvent) => {
-    if (this.isDragging) {
-      this.selectionPosEnd = {
-        x: Math.min(Math.max(this.getCanvasMousePosX(e), 0), this.canvas.width),
-        y: Math.min(Math.max(this.getCanvasMousePosY(e), 0), this.canvas.height)
-      }
+    switch (tool) {
+      case Tools.DRAW_FREE:
+        this.activeTool = new DrawFreeTool(this.canvas, this.drawingState);
+        break;
+      case Tools.DRAW_LINE:
+        this.activeTool = new DrawRectTool(this.canvas, this.drawingState);
+        break;
+      case Tools.DRAW_RECT:
+        this.activeTool = new DrawRectTool(this.canvas, this.drawingState);
+        break;
+      case Tools.DRAW_CIRCLE:
+        this.activeTool = new DrawRectTool(this.canvas, this.drawingState);
+        break;
+      default:
+        this.activeTool = undefined;
+        break;
     }
-  }
-
-  private onPointerUp = (e: MouseEvent) => {
-    this.isDragging = false;
-    this.handleSelection()
+    
   }
 }
 

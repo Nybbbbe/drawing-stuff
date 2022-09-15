@@ -16,7 +16,7 @@ const ToolPickerComponent = () => {
     <div className="tool-picker-wrapper">
       {tools.map(tool => {
         return (
-          <button onClick={() => setToolPicked(tool)}>{capitalizeString(tool)}</button>
+          <button key={tool} onClick={() => setToolPicked(tool)}>{capitalizeString(tool)}</button>
         )
       })}
       {toolPicked === 'draw' &&

@@ -42,7 +42,7 @@ const touches = (a: TRect, b: TRect) => {
 	return true;
 }
 
-export const checkOverlap = (x1: number, y1: number, w1: number, h1: number,
+export const checkRectOverlap = (x1: number, y1: number, w1: number, h1: number,
   x2: number, y2: number, w2: number, h2: number): boolean => {
     const a: TRect = {
       x1: x1,
@@ -63,6 +63,26 @@ export const checkOverlap = (x1: number, y1: number, w1: number, h1: number,
       return true;
     }
     if (touches(a, b)) {
+      return true;
+    }
+    return false;
+}
+
+export const checkPointOverlap = (x1: number, y1: number,
+  x2: number, y2: number, w: number, h: number): boolean => {
+    const a: TRect = {
+      x1: x1,
+      y1: y1,
+      x2: x1,
+      y2: y1,
+    }
+    const b: TRect = {
+      x1: x2,
+      y1: y2,
+      x2: x2 + w,
+      y2: y2 + h,
+    }
+    if (contains(b, a)) {
       return true;
     }
     return false;

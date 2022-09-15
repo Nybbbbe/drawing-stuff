@@ -28,9 +28,9 @@ const ColorPaletteComponent = observer(() => {
 
   return (
     <div className="color-palette-wrapper">
-      {colorPaletteState.currentColorPalette.map(color => {
+      {colorPaletteState.currentColorPalette.map((color, index) => {
         return (
-          <div className="show-color-div" onClick={() => selectColor(color)} style={{backgroundColor: color}}></div>
+          <div className="show-color-div" key={index} onClick={() => selectColor(color)} style={{backgroundColor: color}}></div>
         )
       })}
     </div>
